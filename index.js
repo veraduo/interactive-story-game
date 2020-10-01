@@ -13,13 +13,15 @@ app.use(
 app.use(bodyParser.json());
 
 app.get("/echo", function(req, res) {
+    console.log("req.body: " + req.body);
+    console.log("Incoming parameter: " + req.body.queryResult.parameters.echoText);
     var speech =
       req.body.queryResult &&
       req.body.queryResult.parameters &&
       req.body.queryResult.parameters.echoText
         ? req.body.queryResult.parameters.echoText
         : "Seems like some problem. Speak again.";
-    console.log(speech);
+    console.log("Speech variable: " + speech);
     
     var speechResponse = {
       google: {
