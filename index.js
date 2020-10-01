@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require("body-parser");
 const path = require('path');
+const util = require('util');
 
 const app = express();
 
@@ -12,8 +13,8 @@ app.use(
 
 app.use(bodyParser.json());
 
-app.get("/echo", function(req, res) {
-    console.dir("req.body: " + req.body);
+app.post("/echo", function(req, res) {
+    console.log(`post/${util.inspect(req.body,false,null)}`);
     // console.log("Incoming parameter: " + req.body.queryResult.parameters.echoText);
     var speech =
       req.body.queryResult &&
