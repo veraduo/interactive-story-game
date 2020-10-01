@@ -27,13 +27,13 @@ app.post("/echo", function(req, res) {
       messages: [
         {
           text: "Message response",
-          output_audio_text: "Speech reponse"
+          output_audio_text: "Speech response"
         }
       ]
     };
     
     return res.json({
-      fulfillment_response: response
+      fulfillmentResponse: response
     });
 });
 
