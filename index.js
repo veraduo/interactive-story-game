@@ -15,7 +15,6 @@ app.use(bodyParser.json());
 
 app.post("/echo", function(req, res) {
     console.log(`post/${util.inspect(req.body,false,null)}`);
-    console.log("Incoming parameter: " + req.body.QueryParameters);
     var speech =
       req.body.queryResult &&
       req.body.queryResult.parameters &&
