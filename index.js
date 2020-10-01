@@ -16,35 +16,24 @@ app.use(bodyParser.json());
 app.post("/echo", function(req, res) {
     console.log(`post/${util.inspect(req.body,false,null)}`);
     var speech =
-      req.body.queryResult &&
-      req.body.queryResult.parameters &&
-      req.body.queryResult.parameters.echoText
-        ? req.body.queryResult.parameters.echoText
+      req.body.sessionInfo &&
+      req.body.sessionInfo.parameters &&
+      req.body.sessionInfo.parameters.echoText
+        ? req.body.sessionInfo.parameters.echoText
         : "Seems like some problem. Speak again.";
     console.log("Speech variable: " + speech);
     
-    var speechResponse = {
-      google: {
-        expectUserResponse: true,
-        richResponse: {
-          items: [
-            {
-              simpleResponse: {
-                textToSpeech: speech
-              }
-            }
-          ]
+    var response = {
+      messages: [
+        {
+          text: "Message response",
+          output_audio_text: "Speech reponse"
         }
-      }
+      ]
     };
     
     return res.json({
-      payload: speechResponse,
-      data: speechResponse,
-      fulfillmentText: speech,
-      speech: speech,
-      displayText: speech,
-      source: "webhook-echo-sample"
+      fulfillment_response: reponse
     });
 });
 
