@@ -13,7 +13,7 @@ app.use(
 app.use(bodyParser.json());
 
 app.get("/echo", function(req, res) {
-    console.log("req.body: " + req.body);
+    console.log("req.body: " + req.body.queryResult);
     // console.log("Incoming parameter: " + req.body.queryResult.parameters.echoText);
     var speech =
       req.body.queryResult &&
