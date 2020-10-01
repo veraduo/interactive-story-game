@@ -33,7 +33,7 @@ app.post("/echo", function(req, res) {
     };
     
     return res.json({
-      fulfillment_response: reponse
+      fulfillment_response: response
     });
 });
 
