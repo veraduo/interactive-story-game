@@ -1,66 +1,188 @@
 const express = require('express');
-const bodyParser = require("body-parser");
+const bodyParser = require('body-parser');
 const path = require('path');
 const util = require('util');
+var pgp = require('pg-promise')();
 
 const app = express();
 
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
+
+app.use(express.static(path.join(__dirname, 'public')));
+
 app.use(
-    bodyParser.urlencoded({
-      extended: true
-    })
+  bodyParser.urlencoded({
+    extended: true
+  })
 );
 
 app.use(bodyParser.json());
 
-app.post("/echo", function(req, res) {
-    console.log(`post/${util.inspect(req.body,false,null)}`);
-    var speech =
-      req.body.sessionInfo &&
-      req.body.sessionInfo.parameters &&
-      req.body.sessionInfo.parameters.echoText
-        ? req.body.sessionInfo.parameters.echoText
-        : "Seems like some problem. Speak again.";
-    console.log("Speech variable: " + speech);
+let dbConfig = {
+	host: 'localhost',
+	port: 5432,
+	database: 'game_db',
+	user: 'postgres',
+	password: 'pwd'
+};
+
+const isProduction = process.env.NODE_ENV === 'production';
+dbConfig = isProduction ? process.env.DATABASE_URL : dbConfig;
+let db = pgp(dbConfig);
+
+
+app.post("/games_complete", function(req, res) {
+  console.log(`post/${util.inspect(req.body,false,null)}`); // print the request parameters
+
+  let ending = '';
+
+  // check if parameters exist (i.e., stuff sent in the request body)
+  if (typeof req.body.sessionInfo.parameters.ending !== 'undefined') {
     
-    var response = {
-      messages: [
-        {
-          text: "Message response",
-          output_audio_text: "Speech response"
+    ending = req.body.sessionInfo.parameters.ending;
+
+    // create a new entry in the database for the ending chosen by the player
+    let query = "INSERT INTO Complete (endName) VALUES ('" + ending + "');";
+    db.any(query)
+      .then(function (rows) {
+        console.log("Inserted ending '" + ending + "' into database.");
+      }).catch(function (err) {
+        console.error("Error inserting into db.");
+      });
+
+  } else if (typeof req.body.fulfillmentInfo.tag !== 'undefined') {
+    
+    ending = req.body.fulfillmentInfo.tag;
+
+    // create a new entry in the database for the ending chosen by the player
+    let query = "INSERT INTO Complete (endName) VALUES ('" + ending + "');";
+    db.any(query)
+      .then(function (rows) {
+        console.log("Inserted ending '" + ending + "' into database.");
+      }).catch(function (err) {
+        console.error("Error inserting into db.");
+      });
+
+  } else {
+    console.error("Parameter 'ending' of type @sys.given-name is EMPTY or undefined.")
+    console.error("FulfillmentInfo does not contain webhook tag.")
+  }
+  
+  /*
+  var response = {
+    message: [
+      {
+        "text": {
+          "text": [
+            `You, ${username}, find yourself in a dark, dark dungeon. There are bad things here. Option 1, 2, or 3. What would you like to do?`
+          ],
+          "allowPlaybackInterruption": true,  
+        },
+        "outputAudioText": {
+          "allowPlaybackInterruption": true,
+          "text": [
+            `You, ${username}, find yourself in a dark, dark dungeon. There are bad things here. Option 1, 2, or 3. What would you like to do?`
+          ]
         }
-      ]
-    };
+      }  
+    ]
+  };
+
+  return res.json({
+    fulfillmentResponse: response
+  });
+  */
+
+});
+
+app.post("/games_started", function(req, res) {
+  console.log(`post/${util.inspect(req.body,false,null)}`); // print the request parameters
+
+  let page = '';
+
+  // check if parameters exist (i.e., stuff sent in the request body)
+  if (typeof req.body.pageInfo.currentPage !== 'undefined' && typeof req.body.fulfillmentInfo.tag !== 'undefined') {
     
-    return res.json({
-      fulfillmentResponse: response
-    });
+    page = req.body.pageInfo.currentPage;
+    page_tag = req.body.fulfillmentInfo.tag;
+
+    // create a new entry in the database for the page the player is on
+    let query = "INSERT INTO Play (pageID, pageTag) VALUES ('" + page + "', '" + page_tag + "');";
+    db.any(query)
+      .then(function (rows) {
+        console.log("Inserted page '" + page + "' with tag '" + page_tag + "' into database.");
+      }).catch(function (err) {
+        console.error("Error inserting into db.");
+      });
+
+  } else if (typeof req.body.pageInfo.currentPage !== 'undefined') {
+
+    page = req.body.pageInfo.currentPage;
+
+    // create a new entry in the database for the page the player is on
+    let query = "INSERT INTO Play (pageID) VALUES ('" + page + "');";
+    db.any(query)
+      .then(function (rows) {
+        console.log("Inserted page '" + page + "' into database.");
+      }).catch(function (err) {
+        console.error("Error inserting into db.");
+      });
+
+  } else if (typeof req.body.fulfillmentInfo.tag !== 'undefined') {
+    
+    page_tag = req.body.fulfillmentInfo.tag;
+
+    // create a new entry in the database for the page the player is on
+    let query = "INSERT INTO Play (pageTag) VALUES ('" + page_tag + "');";
+    db.any(query)
+      .then(function (rows) {
+        console.log("Inserted page with tag '" + page_tag + "' into database.");
+      }).catch(function (err) {
+        console.error("Error inserting into db.");
+      });
+
+  } else {
+    console.error("Parameter 'currentPage' is EMPTY or undefined.")
+    console.error("FulfillmentInfo does not contain webhook tag.")
+  }
+
 });
 
 
+app.get('/', function(req, res) {
+  // retrieve usage data from database
+  let games_played = "SELECT COUNT(*) FROM Play;";
+  let games_completed = "SELECT COUNT(*) FROM Complete;";
+  let myrtle = "SELECT COUNT(*) FROM Complete WHERE endName = 'myrtle';";
+  let bruce = "SELECT COUNT(*) FROM Complete WHERE endName = 'bruce';";
+  let blade = "SELECT COUNT(*) FROM Complete WHERE endName = 'blade';";
 
-// app.use(express.static(path.join(__dirname, 'public')));
+  db.task('get-everything', task => {
+    return task.batch([
+        task.any(games_played),
+        task.any(games_completed),
+        task.any(myrtle),
+        task.any(bruce),
+        task.any(blade)
+    ]);
+  }).then(info => {
+      //console.log(info);
+      res.render('home',{
+        games_played: info[0],
+        games_completed: info[1],
+        myrtle: info[2][0].count,
+        bruce: info[3][0].count,
+        blade: info[4][0].count
+      });
+  }).catch(err => {
+      console.log('error', err);
+      res.render('home', {
+        
+      });
+  });
+});
 
-// app.use(express.json({limit: '50mb'})); 
-//   app.use(express.urlencoded({limit: '50mb', extended: true}));
-
-// app.use((req, res, next) => {
-//     res.status(404).send("Sorry, can't find that!")
-// });
-
-// app.use((err, req, res, next) => {
-//     res.locals.message = err.message;
-
-//     console.log(err.message);
-
-//     res.locals.error = req.app.get('env') === 'development' ? err: {};
-
-//     res.status(err.status || 500).send("Something broke!");
-// });
-
-app.get("/url", (req, res, next) => {
-    res.json(["Tony","Lisa","Michael","Ginger","Food"]);
-   });
 
 
 
