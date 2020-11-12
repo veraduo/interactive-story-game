@@ -38,7 +38,7 @@ app.post("/games_complete", function(req, res) {
   let ending = '';
 
   // check if parameters exist (i.e., stuff sent in the request body)
-  if (typeof req.body.sessionInfo.parameters.ending !== 'undefined') {
+  if (typeof req.body.sessionInfo.parameters !== 'undefined') {
     
     ending = req.body.sessionInfo.parameters.ending;
 
