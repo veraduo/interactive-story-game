@@ -12,18 +12,18 @@ CREATE TABLE IF NOT EXISTS Play (
   pageTag VARCHAR(50)
 );
 
-/* Test data */
+-- /* Test data */
 
-INSERT INTO Complete (endName) VALUES ('myrtle');
-INSERT INTO Complete (endName) VALUES ('myrtle');
-INSERT INTO Complete (endName) VALUES ('bruce');
-INSERT INTO Complete (endName) VALUES ('blade');
+-- INSERT INTO Complete (endName) VALUES ('myrtle');
+-- INSERT INTO Complete (endName) VALUES ('myrtle');
+-- INSERT INTO Complete (endName) VALUES ('bruce');
+-- INSERT INTO Complete (endName) VALUES ('blade');
 
 /* 
 
 To init the db on Heroku, run:
 
 $ heroku login
-$ heroku pg:psql --app interact-game < init.sql 
+$ heroku pg:psql --app interactive-story-game < init.sql 
 
 */
