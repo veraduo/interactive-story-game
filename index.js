@@ -41,7 +41,8 @@ app.post("/games_complete", function(req, res) {
   if (typeof req.body.sessionInfo.parameters !== 'undefined') {
     
     ending = req.body.sessionInfo.parameters['given-name'];
-    ending = ending.toLowerCase();
+    console.log("Logging ending: " + ending);
+    ending = ending[0].toLowerCase();
 
     // create a new entry in the database for the ending chosen by the player
     let query = "INSERT INTO Complete (endName) VALUES ('" + ending + "');";
