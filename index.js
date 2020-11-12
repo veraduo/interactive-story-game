@@ -55,7 +55,7 @@ app.post("/games_complete", function(req, res) {
   } else if (typeof req.body.fulfillmentInfo.tag !== 'undefined') {
     
     ending = req.body.fulfillmentInfo.tag;
-    ending = ending[0].toLowerCase();
+    ending = ending.toLowerCase();
 
     // create a new entry in the database for the ending chosen by the player
     let query = "INSERT INTO Complete (endName) VALUES ('" + ending + "');";
