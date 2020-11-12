@@ -169,8 +169,8 @@ app.get('/', function(req, res) {
   }).then(info => {
       //console.log(info);
       res.render('home',{
-        games_played: info[0],
-        games_completed: info[1],
+        games_played: info[0][0],
+        games_completed: info[1][0],
         myrtle: info[2][0].count,
         bruce: info[3][0].count,
         blade: info[4][0].count
