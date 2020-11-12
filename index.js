@@ -158,7 +158,7 @@ app.get('/', function(req, res) {
   let games_completed = "SELECT COUNT(*) FROM Complete;";
   let myrtle = "SELECT COUNT(*) FROM Complete WHERE endName = 'myrtle';";
   let bruce = "SELECT COUNT(*) FROM Complete WHERE endName = 'bruce';";
-  let blade = "SELECT COUNT(*) FROM Complete WHERE endName = 'blade';";
+  let blade = "SELECT COUNT(*) FROM Complete WHERE endName = 'sebastian';";
 
   db.task('get-everything', task => {
     return task.batch([
