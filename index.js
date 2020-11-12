@@ -175,7 +175,7 @@ app.get('/', function(req, res) {
         games_completed: info[1][0].count,
         myrtle: info[2][0].count,
         bruce: info[3][0].count,
-        blade: info[4][0].count
+        sebastian: info[4][0].count
       });
   }).catch(err => {
       console.log('error', err);
