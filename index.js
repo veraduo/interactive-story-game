@@ -204,11 +204,11 @@ window.onload = function () {
           indexLabelFontSize: 16,
       indexLabelPlacement: "outside",
       dataPoints: [
-        { x: 10, y: myrtle, indexLabel: "\u2605 Myrtle" },
-        { x: 20, y: bruce, indexLabel: "\u2605 Bruce" },
-        { x: 30, y: sebastian, indexLabel: "\u2605 Sebastian" },
-        { x: 40, y: games_played, indexLabel: "\u2605 Games Started" },
-        { x: 50, y: games_completed, indexLabel: "\u2605 Games Completed" }
+        { x: 10, y: document.getElementById("myr").value, indexLabel: "\u2605 Myrtle" },
+        { x: 20, y: document.getElementById("myr").value, indexLabel: "\u2605 Bruce" },
+        { x: 30, y: document.getElementById("myr").value, indexLabel: "\u2605 Sebastian" },
+        { x: 40, y: document.getElementById("myr").value, indexLabel: "\u2605 Games Started" },
+        { x: 50, y: document.getElementById("myr").value, indexLabel: "\u2605 Games Completed" }
       ]
     }]
   });
