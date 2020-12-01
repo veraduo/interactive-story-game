@@ -185,6 +185,37 @@ app.get('/', function(req, res) {
   });
 });
 
+window.onload = function () {
+    
+  var chart = new CanvasJS.Chart("chartContainer", {
+    animationEnabled: true,
+    exportEnabled: true,
+    theme: "light1", // "light1", "light2", "dark1", "dark2"
+    title:{
+      text: "Game Stats"
+    },
+      axisY: {
+        includeZero: true
+      },
+    data: [{
+      type: "column", //change type to bar, line, area, pie, etc
+      //indexLabel: "{y}", //Shows y value on all Data Points
+      indexLabelFontColor: "#5A5757",
+          indexLabelFontSize: 16,
+      indexLabelPlacement: "outside",
+      dataPoints: [
+        { x: 10, y: myrtle, indexLabel: "\u2605 Myrtle" },
+        { x: 20, y: bruce, indexLabel: "\u2605 Bruce" },
+        { x: 30, y: sebastian, indexLabel: "\u2605 Sebastian" },
+        { x: 40, y: games_played, indexLabel: "\u2605 Games Started" },
+        { x: 50, y: games_completed, indexLabel: "\u2605 Games Completed" }
+      ]
+    }]
+  });
+  chart.render();
+  
+  }
+
 
 
 
