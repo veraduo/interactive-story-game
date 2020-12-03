@@ -18,18 +18,18 @@
       title:{
         text: "Game Stats"
       },
-        axisY: {
-          includeZero: true
-        },
-      data: [{
-        type: "bar", //change type to bar, line, area, pie, etc
-        //indexLabel: "{y}", //Shows y value on all Data Points
-        indexLabelFontColor: "#5A5757",
-            indexLabelFontSize: 16,
-        indexLabelPlacement: "outside",
-        dataPoints: [<%- myrtle %>, <%- bruce %>, <%- sebastian %>, <%- games_played %>, <%- games_completed %>]
-      }]
-    });
+      axisY: {
+        includeZero: true
+      },
+      data: {
+        labels: ["Myrtle", "Bruce", "Sebastian", "Games Played", "Games Completed"],
+        datasets: [{
+          label: "Game Stats",
+          backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
+          data: [<%- myrtle %>, <%- bruce %>, <%- sebastian %>, <%- games_played %>, <%- games_completed %>]
+        }]
+      }
+      });
     chart.render();
     
     }
